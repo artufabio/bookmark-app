@@ -6,6 +6,8 @@ const websiteNameEl = document.getElementById('website-name');
 const websiteUrlEl = document.getElementById('website-url');
 const bookmarksContainer = document.getElementById('bookmarks-container');
 
+let bookmarks = [];
+
 // Show Modal, Focus on Input
 function showModal(){
     modal.classList.add('show-modal');
@@ -33,6 +35,24 @@ function validateForm(nameValue, urlValue) {
     return true;
 }
 
+// Fetch Bookmarks from Local Storage
+function fetchBookmarks() {
+    // Get bookmarks from Local Storage if available
+    if (localStorage.getItem('bookmarks')) {
+        bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+    } else {
+        // Create bookmarks array in Local Storage as example for users
+        bookmarks = [
+            {
+                name: 'CSS-tricks',
+                url: 'https://css-tricks.com/'
+            }
+        ];
+        localStorage.setItem('bookmarks',JSON.stringify(bookmarks));
+    }
+    console.log(bookmarks);
+}
+
 // Handle Data from Form
 function storeBookmark(ev) {
     ev.preventDefault();
@@ -41,11 +61,22 @@ function storeBookmark(ev) {
     if (!urlValue.includes('http://') && !urlValue.includes('http://')) {
         urlValue = `https://${urlValue}`;
     }
-    console.log(nameValue,urlValue);
     if (!validateForm(nameValue, urlValue)) {   // if the validation goes wrong then stop evalueting the rest of the code
         return false;
     }
+    const bookmark = {
+        name: nameValue,
+        url: urlValue
+    };
+    bookmarks.push(bookmark);
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+    fetchBookmarks();
+    bookmarkForm.reset();
+    websiteNameEl.focus();
 }
 
 // Event Listener
 bookmarkForm.addEventListener('submit', storeBookmark);
+
+// On Load, Fetch bookmarks
+fetchBookmarks();
