@@ -88,7 +88,7 @@ function fetchBookmarks() {
 
 // Delete Bookmark
 function deleteBookmark(id) {
-    // Loop through bookmarks array
+    
     if (bookmarks[id]) {
         delete bookmarks[id]
     }
